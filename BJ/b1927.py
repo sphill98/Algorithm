@@ -4,7 +4,7 @@ N = int(input())
 
 min_h = []
 
-def push(x):
+def push(x): #추가 알고리즘
   min_h.append(x) #새로운 원소는 기본적으로 맨 뒤에 넣는다
   p = len(min_h) - 1 #맨 마지막 노드부터 정렬 시작
   while True:
@@ -18,7 +18,7 @@ def push(x):
     else: #더 이상 노드가 올라가지 못하면 종료
       break
 
-def check():
+def check(): #삭제 
   if len(min_h) == 0: #힙이 비어있으면 0을 리턴
     return 0
   me = min_h[0] #최소 원소를 임시 변수에 넣는다.
