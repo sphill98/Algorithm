@@ -1,50 +1,50 @@
-#BJ1260
-#S2
+from collections import deque
 
-#import sys
+#Variables
+N, M, v = map(int, input().split())
 
-N, M, v0 = map(int, input().split())
+G = [[] for i in range(N+1)]
 
-#Making Graph
-G = ['GRAPH']
-for i in range(N):
-  G.append([])
+dfs_lst = []
+bfs_lst = []
 
-for i in range(M): #edge list 작성
-  e1, e2 = map(int, input().split())
-  G[e1].append(e2)
-  G[e2].append(e1)
 
-for i in range(N): #작은 순서대로 방문하게 하기 위해 sorting
-  G[i+1].sort()
+dfs_visited = [False] * (N + 1)
+bfs_visited = [False] * (N + 1)
 
-dfs_visited = [v0]
-bfs_visited = [[v0]]
+for i in range(M):
+    a, b = map(int, input().split())
+    G[a].append(b)
+    G[b].append(a)
 
-def DFS(G, u): #DFS
-  for v in G[u]:
-    if v not in dfs_visited:
-      dfs_visited.append(v)
-      DFS(G, v)
+for i in G:
+    i.sort()
 
-def BFS(G, u): #BFS
-  b_visit = [u]
-  b = 0
-  while len(bfs_visited[b]) != 0:
-    bfs_visited.append([])
-    for v in bfs_visited[b]:
-      for w in G[v]:
-        if w not in b_visit:
-          bfs_visited[b+1].append(w)
-          b_visit.append(w)
-    b += 1
+def DFS(v):
+    dfs_visited[v] = True
+    dfs_lst.append(v)
+    for i in G[v]:
+        if not dfs_visited[i]:
+            DFS(i)
 
-DFS(G, v0)
-BFS(G, v0)
+def BFS(v):
+    queue = deque()
+    bfs_visited[v] = True
+    queue.append(v)
+    bfs_lst.append(v)
+    while queue:
+        w = queue.popleft()
+        for i in G[w]:
+            if not bfs_visited[i]:
+                queue.append(i)
+                bfs_lst.append(i)
+                bfs_visited[i] = True
 
-for s in dfs_visited:
-  print(s, end = ' ')
+DFS(v)
+BFS(v)
+
+for i in dfs_lst:
+    print(i, end = ' ')
 print('')
-for s in bfs_visited:
-  for k in s:
-    print(k, end = ' ')
+for i in bfs_lst:
+    print(i, end = ' ')
