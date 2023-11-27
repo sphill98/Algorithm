@@ -1,31 +1,34 @@
 #bj1074
 #S1
-
 N, r, c = map(int, input().split())
 
-def Z(N, r, c):
-  if N == 1:
-    if r == 0:
-      if c == 0:
-        return 0
-      else:
-        return 1
-    else:
-      if c == 0:
-        return 2
-      else:
-        return 3
-  else:
-    k = (2 ** (N-1))
-    if r < k:
-      if c < k:
-        return Z(N-1, r, c)
-      else:
-        return (k ** 2) + Z(N-1, r, c - k) 
-    else:
-      if c < k:
-        return (k ** 2)*2 + Z(N-1, r - k, c)
-      else:
-        return (k ** 2)*3 + Z(N-1, r - k, c - k)
+def zSearch(a, b, c, d, x, y):
+    if b - a == 1:
+        if x == a:
+            if y == c:
+                return 0
+            else:
+                return 1
+        else:
+            if y == c:
+                return 2
+            else:
+                return 3
 
-print(Z(N, r, c))
+    mid_1 = (a + b - 1) // 2
+    mid_2 = (c + d - 1) // 2
+    size = ((b - a + 1) // 2) ** 2
+
+    if x <= mid_1:
+        if y <= mid_2:
+            return zSearch(a, mid_1, c, mid_2, x, y)
+        else:
+            return size + zSearch(a, mid_1, mid_2 + 1, d, x, y)
+    else:
+        if y <= mid_2:
+            return (2 * size) + zSearch(mid_1 + 1, b, c, mid_2, x, y)
+        else:
+            return (3 * size) + zSearch(mid_1 + 1, b, mid_2 + 1, d, x, y)
+
+
+print(zSearch(0, 2 ** N - 1, 0, 2 ** N - 1, r, c))
