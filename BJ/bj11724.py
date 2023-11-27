@@ -1,35 +1,38 @@
 #BJ11724
 #S2
 
-#import sys
+import sys
+from collections import deque
+
+def BFS(u):
+    q = deque()
+    q.append(u)
+    visited[u] = True
+    while q:
+        v = q.popleft()
+        for e in G[v]:
+            if not visited[e]:
+                visited[e] = True
+                q.append(e)
+
+input = sys.stdin.readline
 
 N, M = map(int, input().split())
 
-def DFS(G, u):
-  for v in G[u]:
-    if v not in dfs_visited:
-      dfs_visited.append(v)
-      DFS(G, v)
+G = [[] for _ in range(N+1)]
 
-#Making Graph
-G = ['GRAPH']
-V = []
-for i in range(N):
-  G.append([])
-  V.append(i+1)
+for i in range(M): #Graph 작성
+    e1, e2 = map(int, input().split())
+    G[e1].append(e2)
+    G[e2].append(e1)
 
-for i in range(M): #edge list 작성
-  e1, e2 = map(int, input().split())
-  G[e1].append(e2)
-  G[e2].append(e1)
+visited = [False] * (N + 1)
 
-conn_lst = []
-while len(V) != 0:
-  v0 = V[0]
-  dfs_visited = [v0]
-  DFS(G, v0)
-  conn_lst.append(dfs_visited)
-  tmp = set(V) - set(dfs_visited)
-  V = list(tmp)
+cnt = 0
 
-print (len(conn_lst))
+for i in range(1, N + 1):
+    if not visited[i]:
+        BFS(i) #한 번 할 때마다 연결리스트 발견
+        cnt += 1
+        
+print(cnt)
