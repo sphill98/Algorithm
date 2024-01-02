@@ -2,46 +2,34 @@
 #S1
 
 #import sys
-
+#input = sys.stdin.readline
 N, M = map(int, input().split())
 
-#Making Graph
-G = ['GRAPH']
-V = []
-for i in range(N):
-  G.append([])
-  V.append(i+1)
+INF = 1e9
+lst = [[]] * (N + 1)
+fw_lst = [([INF]*(N+1)) for _ in range(N + 1)]
 
-for i in range(M): #edge list 작성
-  e1, e2 = map(int, input().split())
-  G[e1].append(e2)
-  G[e2].append(e1)
+for i in range(1, N + 1):
+    fw_lst[i][i] = 0
 
-def BFS(G, u):
-  b_visit = [u]
-  b = 0
-  while len(bfs_visited[b]) != 0:
-    bfs_visited.append([])
-    for v in bfs_visited[b]:
-      for w in G[v]:
-        if w not in b_visit:
-          bfs_visited[b+1].append(w)
-          b_visit.append(w)
-    b += 1
+for i in range(M):
+    a, b = map(int, input().split())
+    lst[a].append(b)
+    lst[b].append(a)
+    fw_lst[a][b], fw_lst[b][a] = 1, 1
 
-def Bacon(lst): #베이컨 수를 구하는 과정
-  bacon_n = 0
-  for n in range(len(lst)):
-    bacon_n += n*len(lst[n]) #n이 단계, lst[n]은 단계가 n인 vertex들의 집합이다.
-  return bacon_n
+for k in range(1, N + 1):
+    for i in range(1, N + 1):
+        for j in range(1, N + 1):
+            fw_lst[i][j] = min(fw_lst[i][j], fw_lst[i][k] + fw_lst[k][j])
 
-dic = []
+sum_ = INF
+ans = 0
+for k in range(1, N + 1):
+    i = N + 1 - k
+    temp = sum(fw_lst[i])-fw_lst[i][0]
+    if temp <= sum_:
+        sum_ = temp
+        ans = i
 
-for u in V:
-  bfs_visited = [[u]]
-  BFS(G, u)
-  dic.append([u, Bacon(bfs_visited)])
-
-dic.sort(key = lambda x : (x[1], x[0])) #베이컨 수가 가장 작은 것부터 정렬. 값이 같으면 작은 vertex가 우선.
-
-print(dic[0][0])
+print(ans)
